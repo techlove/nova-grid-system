@@ -1,7 +1,11 @@
 <template>
   <div :class="elementSize">
     <field-wrapper :stacked="field.stacked" v-if="field.visible">
-      <div class="px-8" :class="field.stacked ? 'pt-6 w-full' : 'py-6 w-1/5'">
+      <div :class="field.compact ? (
+          field.stacked ? 'px-6 pt-3 w-full' : 'px-6 py-3 w-1/5 flex flex-row items-center'
+      ) : (
+          field.stacked ? 'px-8 pt-6 w-full' : 'px-8 py-6 w-1/5 flex flex-row items-center'
+    )">
         <slot>
           <form-label
             :label-for="field.attribute"
@@ -15,7 +19,7 @@
           </form-label>
         </slot>
       </div>
-      <div class="py-6 px-8" :class="fieldClasses">
+      <div :class="fieldClasses">
         <slot name="field" />
 
         <help-text
@@ -25,7 +29,7 @@
           {{ firstError }}
         </help-text>
 
-        <help-text class="help-text mt-2" v-if="showHelpText">
+        <help-text class="help-text mt-2" v-if="showHelpText && field.helpText && field.helpText.length">
           {{ field.helpText }}
         </help-text>
       </div>
@@ -49,7 +53,7 @@ export default {
 
   mounted() {
     if (!this.hasSize) {
-      
+
       this.$el.parentElement.classList.add("w-full");
     }
 
@@ -76,7 +80,7 @@ export default {
       this.$el.children[0].classList.remove("remove-bottom-border");
     }
 
-   
+
   },
 
   computed: {
@@ -96,13 +100,21 @@ export default {
      * Return the classes that should be used for the field content.
      */
     fieldClasses() {
-      return this.fullWidthContent
-        ? this.field.stacked
-          ? "w-full"
-          : "w-4/5"
-        : this.hasSize
-        ? "w-full"
-        : "w-1/2";
+        const widthClass = this.fullWidthContent
+            ? this.field.stacked
+                ? "w-full"
+                : "w-4/5"
+            : this.hasSize
+                ? "w-full"
+                : "w-1/2";
+
+        const paddingClass = this.field.compact ?
+            (this.field.stacked ? "py-3 px-6" : "py-3 px-4") :
+            (this.field.stacked ? "py-5 px-6" : "py-5 px-6");
+        return [
+            widthClass,
+            paddingClass,
+        ];
     },
 
     /**

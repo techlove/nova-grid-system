@@ -1,4 +1,4 @@
-const Vue = require("@vue/compat/dist/vue.cjs.prod");
+const Vue = require("vue");
 Nova.booting((Vue) => {
   Vue.component("DefaultField", require("./components/DefaultField").default);
   Vue.component("PanelItem", require("./components/PanelItem").default);
